@@ -103,4 +103,88 @@ function updateToolTip(selectedXAxis, selectedYAxis, circlesGroup, textGroup) {
         })
     return circlesGroup
 }
+function makeResponsive() {
+    //  div by id
+    var svgArea = d3.select("#scatter").select("svg");
+    // clear svg
+    if (!svgArea.empty()) {
+        svgArea.remove()
+    }
+    // svg parameters
+    var svgHeight = window.innerHeight / 1
+    var svgWidth = window.innerWidth / 1.3
+    var margin = {
+        top: 50,
+        right: 50,
+        bottom: 100,
+        left: 80
+    }
+    //  chart area
+    var chartHeight = svgHeight - margin.top - margin.bottom
+    var chartWidth = svgWidth - margin.left - margin.right
+    //  dynamic wrapper
+    var svg = d3
+        .select("#scatter")
+        .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight);
+    // append svg group
+    var chartGroup = svg.append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    d3.csv("assets/data/data.csv").then(function (demoData, err) {
+        if (err) throw err;
+        //  parse data
+        demoData.forEach(function (data) {
+            data.poverty = +data.poverty;
+            data.healthcare = +data.healthcare;
+            data.age = +data.age;
+            data.smokes = +data.smokes;
+            data.income = +data.income;
+            data.obesity = data.obesity;
+        });
+        // crate linear scales
+        var xLinearScale = xScale(demoData, selectedXAxis, chartWidth);
+        var yLinearScale = yScale(demoData, selectedYAxis, chartHeight);
+        // initial axis functions
+        var bottomAxis = d3.axisBottom(xLinearScale);
+        var leftAxis = d3.axisLeft(yLinearScale);
+        //  append x axis
+        var xAxis = chartGroup.append("g")
+            .attr("transform", `translate(0, ${chartHeight})`)
+            .call(bottomAxis);
+        //  append y axis
+        var yAxis = chartGroup.append("g")
+            .call(leftAxis);
+        //  datat for circles
+        var circlesGroup = chartGroup.selectAll("circle")
+            .data(demoData);
+        // bind data
+        var elemEnter = circlesGroup.enter();
+        // create circles
+        var circle = elemEnter.append("circle")
+            .attr("cx", d => xLinearScale(d[selectedXAxis]))
+            .attr("cy", d => yLinearScale(d[selectedYAxis]))
+        attr("r", 15)
+            .classed("stateCircle", true);
+        // circle text
+        var circleText = elemEnter.append("text")
+            .attr("x", d => xLinearScale(d[selectedXAxis]))
+            .attr("y", d => yLinearScale(d[selectedYAxis]))
+            .attr("dy", ".35em")
+            .text(d => d.abbr)
+            .classed("stateText", true);
+        // update tool tip
+        var circlesGroup = updateToolTip(selectedXAxis, selectedYAxis, circle, circleText);
+        // add labels
+        var xLabelsGroup = chartGroup.append("g")
+            .attr("transfrom", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
+        var povertyLabel = xLabelsGroup.append("text")
+            .attr("x", 0)
+            .attr("y", 20)
+            .attr("value", "poverty") //event listenter
+            .classed("active", true)
+            .text("In Poverty %");
 
+
+    })
+}
