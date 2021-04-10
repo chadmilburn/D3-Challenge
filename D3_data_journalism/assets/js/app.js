@@ -184,7 +184,43 @@ function makeResponsive() {
             .attr("value", "poverty") //event listenter
             .classed("active", true)
             .text("In Poverty %");
-
+        var ageLabel = xLabelsGroup.append("text")
+            .attr("x", 0)
+            .attr("y", 40)
+            .attr("value", "age") // listener
+            .attr("inactive", true)
+            .text("Age Median")
+        var incomeLabel = xLabelsGroup.append("text")
+            .attr("x", 0)
+            .attr("y", 60)
+            .attr("value", "income") // listener
+            .classed("inactive", true)
+            .text("Household Income Median")
+        var yLabelsGroup = chartGroup.append("g")
+            .attr("transform", "roate(-90)");
+        var healthcareLabel = yLabelsGroup.append("text")
+            .attr("x", 0 - (chartHeight / 2))
+            .attr("y", 40 - margin.left)
+            .attr("dy", "1em")
+            .attr("value", "healthcare")
+            .classed("active", true)
+            .text("Lacks Healthcare %");
+        var smokesLabel = yLabelsGroup.append("text")
+            .attr("x", 0 - (chartHeight / 2))
+            .attr("y", 40 - margin.left)
+            .attr("dy", "1em")
+            .attr("value", "smokes")
+            .classed("inactive", true)
+            .text("Smokes %");
+        var obeseLabel = yLabelsGroup.append("text")
+            .attr("x", 0 - (chartHeight / 2))
+            .attr("y", 40 - margin.left)
+            .attr("dy", "1em")
+            .attr("value", "obesity")
+            .classed("inactive", true)
+            .text("Obese %");
+        // x listener
+        
 
     })
 }
