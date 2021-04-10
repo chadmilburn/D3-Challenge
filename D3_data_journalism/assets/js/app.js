@@ -164,7 +164,7 @@ function makeResponsive() {
         var circle = elemEnter.append("circle")
             .attr("cx", d => xLinearScale(d[selectedXAxis]))
             .attr("cy", d => yLinearScale(d[selectedYAxis]))
-        attr("r", 15)
+            .attr("r", 15)
             .classed("stateCircle", true);
         // circle text
         var circleText = elemEnter.append("text")
@@ -220,7 +220,98 @@ function makeResponsive() {
             .classed("inactive", true)
             .text("Obese %");
         // x listener
-        
+        xLabelsGroup.selectAll("text")
+            .on("click", function () {
+                // get selected label
+                selectedXAxis = d3.select(this).att("value");
+                // update scale
+                xLinearScale = xScale(demoData, selectedXAxis, chartWidth);
+                // render axis
+                xAxis = renderXAxes(xLinearScale, xAxis)
+                // move between selections
+                if (selectedXAxis === "poverty") {
+                    povertyLabel
+                        .classed("active", true)
+                        .classed("inactive", false);
+                    ageLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                    incomeLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                } else if (selectedXAxis === "age") {
+                    povertyLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                    ageLabel
+                        .classed("active", true)
+                        .classed("inactive", false);
+                    incomeLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                } else {
+                    povertyLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                    ageLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                    incomeLabel
+                        .classed("active", true)
+                        .classed("inactive", false);
+                }
+                circle = renderCircles(circlesGroup, xLinearScale, yLinearScale, selectedXAxis, selectedYAxis)
+                circlesGroup = updateToolTip(selectedXAxis, selectedYAxis, circle, circleText)
+                circleText = renderText(circleText, xLinearScale, yLinearScale, selectedXAxis, selectedYAxis)
+            })
+        yLabelsGroup.selectAll("text")
+            .on("click", function () {
+                // get y label
+                selectedYAxis = d3.select(this).attr("value");
+                // update scale
+                yLinearScale = yScale(demoData, selectedYAxis, chartHeight);
+                //  update axis
+                yAxis = renderYAxes(yLinearScale, yAxis);
+                // move between selections
+                if (selectedYAxis === "healthcare") {
+                    healthcareLabel
+                        .classed("active", true)
+                        .classed("inactive", false)
+                    smokesLabel
+                        .classed("acitve", false)
+                        .classed("inactive", true)
+                    obeseLabel
+                        .classed("active", false)
+                        .classed("inactive", true)
+                } else if (selectedYAxis === "smokes") {
+                    healthcareLabel
+                        .classed("active", false)
+                        .classed("inactive", true)
+                    smokesLabel
+                        .classed("acitve", true)
+                        .classed("inactive", false)
+                    obeseLabel
+                        .classed("active", false)
+                        .classed("inactive", true)
+                } else {
+                    healthcareLabel
+                        .classed("active", false)
+                        .classed("inactive", true)
+                    smokesLabel
+                        .classed("acitve", false)
+                        .classed("inactive", true)
+                    obeseLabel
+                        .classed("active", true)
+                        .classed("inactive", false)
+                }
+                circle = renderCircles(circlesGroup, xLinearScale, yLinearScale, selectedXAxis, selectedYAxis);
+                circleText = renderText(circleText, xLinearScale, yLinearScale, selectedXAxis, selectedYAxis);
+                circlesGroup = updateToolTip(selectedXAxis, selectedYAxis, circle, circleText);
+            });
 
-    })
+    }).catch(function (err) {
+        console.log(err);
+    });
 }
+makeResponsive();
+d3.select(window).on("resize", makeResponsive);
