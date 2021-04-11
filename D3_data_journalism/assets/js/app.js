@@ -39,7 +39,7 @@ function renderCircles(circlesGroup, newXScale, newYScale, selectedXAxis, select
     circlesGroup.transition()
         .duration(1000)
         .attr("cx", d => newXScale(d[selectedXAxis]))
-        .attr("cx", d => newYScale(d[selectedYAxis]));
+        .attr("cy", d => newYScale(d[selectedYAxis]));
     return circlesGroup;
 }
 
@@ -108,11 +108,11 @@ function makeResponsive() {
     var svgArea = d3.select("#scatter").select("svg");
     // clear svg
     if (!svgArea.empty()) {
-        svgArea.remove()
+        svgArea.remove();
     }
     // svg parameters
-    var svgHeight = window.innerHeight / 1
-    var svgWidth = window.innerWidth / 1.3
+    var svgHeight = window.innerHeight / 1.5;
+    var svgWidth = window.innerWidth / 1.5;
     var margin = {
         top: 50,
         right: 50,
@@ -120,9 +120,9 @@ function makeResponsive() {
         left: 80
     }
     //  chart area
-    var chartHeight = svgHeight - margin.top - margin.bottom
-    var chartWidth = svgWidth - margin.left - margin.right
-    //  dynamic wrapper
+    var chartHeight = svgHeight - margin.top - margin.bottom;
+    var chartWidth = svgWidth - margin.left - margin.right;
+    //  wrapper
     var svg = d3
         .select("#scatter")
         .append("svg")
@@ -177,7 +177,7 @@ function makeResponsive() {
         var circlesGroup = updateToolTip(selectedXAxis, selectedYAxis, circle, circleText);
         // add labels
         var xLabelsGroup = chartGroup.append("g")
-            .attr("transfrom", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
+            .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
         var povertyLabel = xLabelsGroup.append("text")
             .attr("x", 0)
             .attr("y", 20)
@@ -197,7 +197,7 @@ function makeResponsive() {
             .classed("inactive", true)
             .text("Household Income Median")
         var yLabelsGroup = chartGroup.append("g")
-            .attr("transform", "roate(-90)");
+            .attr("transform", "rotate(-90)");
         var healthcareLabel = yLabelsGroup.append("text")
             .attr("x", 0 - (chartHeight / 2))
             .attr("y", 40 - margin.left)
@@ -207,14 +207,14 @@ function makeResponsive() {
             .text("Lacks Healthcare %");
         var smokesLabel = yLabelsGroup.append("text")
             .attr("x", 0 - (chartHeight / 2))
-            .attr("y", 40 - margin.left)
+            .attr("y", 20 - margin.left)
             .attr("dy", "1em")
             .attr("value", "smokes")
             .classed("inactive", true)
             .text("Smokes %");
         var obeseLabel = yLabelsGroup.append("text")
             .attr("x", 0 - (chartHeight / 2))
-            .attr("y", 40 - margin.left)
+            .attr("y", 0 - margin.left)
             .attr("dy", "1em")
             .attr("value", "obesity")
             .classed("inactive", true)
@@ -223,7 +223,7 @@ function makeResponsive() {
         xLabelsGroup.selectAll("text")
             .on("click", function () {
                 // get selected label
-                selectedXAxis = d3.select(this).att("value");
+                selectedXAxis = d3.select(this).attr("value");
                 // update scale
                 xLinearScale = xScale(demoData, selectedXAxis, chartWidth);
                 // render axis
